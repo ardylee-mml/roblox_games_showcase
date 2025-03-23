@@ -20,36 +20,38 @@ interface GameDetailDialogProps {
 export function GameDetailDialog({ game, open, onOpenChange }: GameDetailDialogProps) {
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
-      <DialogContent className="max-w-4xl max-h-[90vh] overflow-hidden flex flex-col">
-        <DialogHeader className="flex-shrink-0">
-          <DialogTitle className="text-2xl font-bold text-indigo-800">{game.title}</DialogTitle>
+      <DialogContent className="max-w-4xl max-h-[90vh] overflow-hidden flex flex-col bg-white p-0">
+        <DialogHeader className="p-6 border-b">
+          <DialogTitle className="text-2xl font-bold text-gray-900">{game.title}</DialogTitle>
         </DialogHeader>
         
-        <div className="space-y-6 overflow-y-auto flex-1 pr-4 scrollbar-thin scrollbar-thumb-indigo-200 scrollbar-track-transparent hover:scrollbar-thumb-indigo-300">
+        <div className="flex-1 overflow-y-auto">
+          {/* Media Section */}
           {(game.images?.length > 0 || game.videos?.length > 0) && (
-            <div>
-              <h3 className="text-sm font-medium text-indigo-800 mb-2">Media</h3>
-              <ImageCarousel images={game.images || []} videos={game.videos} className="w-full" />
+            <div className="p-6 border-b">
+              <h3 className="text-lg font-semibold text-gray-900 mb-4">Media</h3>
+              <ImageCarousel images={game.images || []} videos={game.videos} className="w-full rounded-lg overflow-hidden" />
             </div>
           )}
 
-          <div>
-            <h3 className="text-sm font-medium text-indigo-800 mb-2">Description</h3>
-            <div className="max-h-[200px] overflow-y-auto pr-2 scrollbar-thin scrollbar-thumb-indigo-200 scrollbar-track-transparent hover:scrollbar-thumb-indigo-300">
-              <p className="text-indigo-700/80 whitespace-pre-line">{game.description}</p>
+          {/* Description Section */}
+          <div className="p-6 border-b">
+            <h3 className="text-lg font-semibold text-gray-900 mb-4">Description</h3>
+            <div className="prose prose-sm text-gray-600">
+              <p className="whitespace-pre-line">{game.description}</p>
             </div>
           </div>
 
+          {/* Play Button Section */}
           {game.robloxGameUrl && (
-            <div>
-              <h3 className="text-sm font-medium text-indigo-800 mb-2">Play the Game</h3>
+            <div className="p-6">
               <Button
-                className="bg-gradient-to-r from-indigo-600 to-purple-600 hover:from-indigo-700 hover:to-purple-700 text-white"
+                className="w-full md:w-auto bg-blue-600 hover:bg-blue-700 text-white"
                 asChild
               >
-                <a href={game.robloxGameUrl} target="_blank" rel="noopener noreferrer">
+                <a href={game.robloxGameUrl} target="_blank" rel="noopener noreferrer" className="flex items-center justify-center">
                   Play on Roblox
-                  <ExternalLink className="h-4 w-4 ml-2" />
+                  <ExternalLink className="ml-2 h-4 w-4" />
                 </a>
               </Button>
             </div>
