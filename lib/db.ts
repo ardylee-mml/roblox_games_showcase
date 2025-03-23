@@ -11,6 +11,7 @@ export interface GameImage {
 export interface GameVideo {
   url: string;
   title?: string;
+  platform: 'youtube' | 'vimeo' | 'other';
 }
 
 export interface Game {
