@@ -1,7 +1,7 @@
-import { NextResponse } from 'next/server';
+import { NextRequest, NextResponse } from 'next/server';
 import cloudinary from '@/lib/cloudinary';
 
-export async function POST(request: Request) {
+export async function POST(request: NextRequest) {
   try {
     const formData = await request.formData();
     const file = formData.get('file') as File;
@@ -17,12 +17,11 @@ export async function POST(request: Request) {
     // Convert file to base64
     const bytes = await file.arrayBuffer();
     const buffer = Buffer.from(bytes);
-    const base64File = `data:${file.type};base64,${buffer.toString('base64')}`;
+    const base64String = `data:${file.type};base64,${buffer.toString('base64')}`;
 
     // Upload to Cloudinary
-    const result = await cloudinary.uploader.upload(base64File, {
+    const result = await cloudinary.uploader.upload(base64String, {
       folder: 'roblox-games',
-      resource_type: 'auto',
     });
 
     return NextResponse.json({

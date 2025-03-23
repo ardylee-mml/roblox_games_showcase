@@ -20,6 +20,8 @@ export interface Game {
   images: GameImage[];
   videos: GameVideo[];
   robloxGameUrl: string;
+  createdAt?: string;
+  updatedAt?: string;
 }
 
 const GAMES_KEY = 'games';
@@ -33,10 +35,14 @@ export async function getAllGames(): Promise<Game[]> {
 }
 
 // Get a single game by ID
-export async function getGameById(id: string): Promise<Game | null> {
-  const gameJson = await getRedisKey(`${GAME_PREFIX}${id}`);
-  if (!gameJson) return null;
-  return JSON.parse(gameJson);
+export async function getGame(id: string): Promise<Game | null> {
+  try {
+    const games = await getAllGames();
+    return games.find(game => game.id === id) || null;
+  } catch (error) {
+    console.error('Failed to get game:', error);
+    throw error;
+  }
 }
 
 // Create a new game
@@ -64,7 +70,7 @@ export async function createGame(game: Omit<Game, 'id' | 'createdAt' | 'updatedA
 
 // Update a game
 export async function updateGame(id: string, updates: Partial<Game>): Promise<Game | null> {
-  const existingGame = await getGameById(id);
+  const existingGame = await getGame(id);
   if (!existingGame) return null;
 
   const updatedGame: Game = {
@@ -89,7 +95,7 @@ export async function updateGame(id: string, updates: Partial<Game>): Promise<Ga
 
 // Delete a game
 export async function deleteGame(id: string): Promise<boolean> {
-  const existingGame = await getGameById(id);
+  const existingGame = await getGame(id);
   if (!existingGame) return false;
 
   // Delete the game
