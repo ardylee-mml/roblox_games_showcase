@@ -16,8 +16,6 @@ const nextConfig = {
   },
   experimental: {
     optimizeCss: true,
-    disableStaticPages404: true,
-    disableStaticPages500: true,
   },
   typescript: {
     ignoreBuildErrors: false,

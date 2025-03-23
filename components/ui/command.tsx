@@ -8,10 +8,14 @@ import { Search } from "lucide-react"
 import { cn } from "@/lib/utils"
 import { Dialog, DialogContent } from "@/components/ui/dialog"
 
+interface CommandProps extends React.ComponentPropsWithoutRef<typeof CommandPrimitive> {
+  children: React.ReactNode
+}
+
 const Command = React.forwardRef<
   React.ElementRef<typeof CommandPrimitive>,
-  React.ComponentPropsWithoutRef<typeof CommandPrimitive>
->(({ className, ...props }, ref) => (
+  CommandProps
+>(({ className, children, ...props }, ref) => (
   <CommandPrimitive
     ref={ref}
     className={cn(
@@ -19,11 +23,17 @@ const Command = React.forwardRef<
       className
     )}
     {...props}
-  />
+  >
+    {children}
+  </CommandPrimitive>
 ))
 Command.displayName = CommandPrimitive.displayName
 
-const CommandDialog = ({ children, ...props }: DialogProps) => {
+interface CommandDialogProps extends DialogProps {
+  children: React.ReactElement | React.ReactElement[]
+}
+
+const CommandDialog = ({ children, ...props }: CommandDialogProps) => {
   return (
     <Dialog {...props}>
       <DialogContent className="overflow-hidden p-0 shadow-lg">
