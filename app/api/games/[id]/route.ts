@@ -1,18 +1,12 @@
 import { NextRequest, NextResponse } from "next/server"
 import { getGame, updateGame, deleteGame } from "@/lib/db"
 
-type RouteParams = {
-  params: {
-    id: string
-  }
-}
-
 export async function GET(
   request: NextRequest,
-  { params }: RouteParams
+  context: { params: { id: string } }
 ) {
   try {
-    const game = await getGame(params.id)
+    const game = await getGame(context.params.id)
     if (!game) {
       return NextResponse.json({ error: "Game not found" }, { status: 404 })
     }
@@ -28,11 +22,11 @@ export async function GET(
 
 export async function PUT(
   request: NextRequest,
-  { params }: RouteParams
+  context: { params: { id: string } }
 ) {
   try {
     const game = await request.json()
-    const updatedGame = await updateGame(params.id, game)
+    const updatedGame = await updateGame(context.params.id, game)
     return NextResponse.json(updatedGame)
   } catch (error) {
     console.error("Error updating game:", error)
@@ -45,10 +39,10 @@ export async function PUT(
 
 export async function DELETE(
   request: NextRequest,
-  { params }: RouteParams
+  context: { params: { id: string } }
 ) {
   try {
-    await deleteGame(params.id)
+    await deleteGame(context.params.id)
     return NextResponse.json({ message: "Game deleted successfully" })
   } catch (error) {
     console.error("Error deleting game:", error)
