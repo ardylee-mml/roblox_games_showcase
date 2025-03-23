@@ -1,20 +1,24 @@
-import type { Metadata } from 'next'
-import './globals.css'
+import "./globals.css"
+import { Inter } from "next/font/google"
 
-export const metadata: Metadata = {
-  title: 'v0 App',
-  description: 'Created with v0',
-  generator: 'v0.dev',
+const inter = Inter({ subsets: ["latin"] })
+
+export const metadata = {
+  title: "Roblox Games Showcase",
+  description: "Discover amazing Roblox game ideas and vote for the winner!",
+  icons: {
+    icon: '/favicon.ico',
+  },
 }
 
 export default function RootLayout({
   children,
-}: Readonly<{
+}: {
   children: React.ReactNode
-}>) {
+}) {
   return (
     <html lang="en">
-      <body>{children}</body>
+      <body className={inter.className}>{children}</body>
     </html>
   )
 }

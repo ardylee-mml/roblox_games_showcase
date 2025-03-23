@@ -1,78 +1,141 @@
 "use client"
 
+import * as React from "react"
 import { useState } from "react"
 import Image from "next/image"
 import { Button } from "@/components/ui/button"
 import { ChevronLeft, ChevronRight } from "lucide-react"
 import { cn } from "@/lib/utils"
+import type { GameImage, GameVideo } from "@/lib/db"
 
 interface ImageCarouselProps {
-  images: string[]
+  images: GameImage[]
+  videos?: GameVideo[]
+  className?: string
 }
 
-export function ImageCarousel({ images }: ImageCarouselProps) {
+function getVideoEmbedUrl(url: string): string | null {
+  // YouTube
+  const youtubeRegex = /(?:youtube\.com\/(?:[^\/]+\/.+\/|(?:v|e(?:mbed)?)\/|.*[?&]v=)|youtu\.be\/)([^"&?\/\s]{11})/
+  const youtubeMatch = url.match(youtubeRegex)
+  if (youtubeMatch) {
+    return `https://www.youtube.com/embed/${youtubeMatch[1]}`
+  }
+
+  // Vimeo
+  const vimeoRegex = /(?:vimeo\.com\/)(\d+)/
+  const vimeoMatch = url.match(vimeoRegex)
+  if (vimeoMatch) {
+    return `https://player.vimeo.com/video/${vimeoMatch[1]}`
+  }
+
+  return null
+}
+
+export function ImageCarousel({ images, videos = [], className = "" }: ImageCarouselProps) {
   const [currentIndex, setCurrentIndex] = useState(0)
+  const totalItems = images.length + videos.length
+  const isVideo = currentIndex >= images.length
 
-  const goToPrevious = () => {
-    const isFirstImage = currentIndex === 0
-    const newIndex = isFirstImage ? images.length - 1 : currentIndex - 1
-    setCurrentIndex(newIndex)
+  const handlePrevious = () => {
+    setCurrentIndex((index) => (index === 0 ? totalItems - 1 : index - 1))
   }
 
-  const goToNext = () => {
-    const isLastImage = currentIndex === images.length - 1
-    const newIndex = isLastImage ? 0 : currentIndex + 1
-    setCurrentIndex(newIndex)
+  const handleNext = () => {
+    setCurrentIndex((index) => (index === totalItems - 1 ? 0 : index + 1))
   }
 
-  const goToSlide = (slideIndex: number) => {
-    setCurrentIndex(slideIndex)
-  }
+  if (totalItems === 0) return null
 
   return (
-    <div className="relative h-[300px] md:h-[400px] w-full rounded-lg overflow-hidden border-2 border-indigo-200 bg-indigo-50">
-      <div className="absolute inset-0">
-        <Image
-          src={images[currentIndex] || "/placeholder.svg"}
-          alt={`Game screenshot ${currentIndex + 1}`}
-          fill
-          className="object-contain"
-        />
-      </div>
-
-      {/* Left Arrow */}
-      <Button
-        variant="ghost"
-        size="icon"
-        className="absolute left-2 top-1/2 -translate-y-1/2 bg-indigo-500/70 hover:bg-indigo-600/80 text-white rounded-full"
-        onClick={goToPrevious}
-      >
-        <ChevronLeft className="h-6 w-6" />
-      </Button>
-
-      {/* Right Arrow */}
-      <Button
-        variant="ghost"
-        size="icon"
-        className="absolute right-2 top-1/2 -translate-y-1/2 bg-indigo-500/70 hover:bg-indigo-600/80 text-white rounded-full"
-        onClick={goToNext}
-      >
-        <ChevronRight className="h-6 w-6" />
-      </Button>
-
-      {/* Dots */}
-      <div className="absolute bottom-4 left-1/2 -translate-x-1/2 flex gap-2">
-        {images.map((_, slideIndex) => (
-          <div
-            key={slideIndex}
-            onClick={() => goToSlide(slideIndex)}
-            className={cn(
-              "cursor-pointer w-3 h-3 rounded-full transition-all",
-              currentIndex === slideIndex ? "bg-indigo-600" : "bg-indigo-300",
+    <div className={`relative group ${className}`}>
+      <div className="aspect-video relative overflow-hidden rounded-lg border-2 border-indigo-100">
+        {isVideo ? (
+          // Video embed
+          <div className="w-full h-full">
+            {(() => {
+              const video = videos[currentIndex - images.length]
+              const embedUrl = getVideoEmbedUrl(video.url)
+              if (embedUrl) {
+                return (
+                  <iframe
+                    src={embedUrl}
+                    title={video.title || "Video"}
+                    className="w-full h-full"
+                    allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+                    allowFullScreen
+                  />
+                )
+              } else {
+                return (
+                  <div className="w-full h-full flex items-center justify-center bg-indigo-50">
+                    <a
+                      href={video.url}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="text-indigo-600 hover:text-indigo-800"
+                    >
+                      {video.title || "Watch Video"}
+                    </a>
+                  </div>
+                )
+              }
+            })()}
+          </div>
+        ) : (
+          // Image display
+          <>
+            <Image
+              src={images[currentIndex].url}
+              alt={images[currentIndex].caption || `Image ${currentIndex + 1}`}
+              fill
+              className="object-cover"
+            />
+            {images[currentIndex].caption && (
+              <div className="absolute bottom-0 left-0 right-0 bg-black/50 text-white p-2 text-sm">
+                {images[currentIndex].caption}
+              </div>
             )}
-          />
-        ))}
+          </>
+        )}
       </div>
+
+      {totalItems > 1 && (
+        <>
+          <Button
+            variant="outline"
+            size="icon"
+            className="absolute left-2 top-1/2 -translate-y-1/2 bg-white/80 hover:bg-white opacity-0 group-hover:opacity-100 transition-opacity"
+            onClick={handlePrevious}
+          >
+            <ChevronLeft className="h-4 w-4" />
+          </Button>
+          <Button
+            variant="outline"
+            size="icon"
+            className="absolute right-2 top-1/2 -translate-y-1/2 bg-white/80 hover:bg-white opacity-0 group-hover:opacity-100 transition-opacity"
+            onClick={handleNext}
+          >
+            <ChevronRight className="h-4 w-4" />
+          </Button>
+        </>
+      )}
+
+      {totalItems > 1 && (
+        <div className="absolute bottom-2 left-1/2 -translate-x-1/2 flex gap-1">
+          {[...Array(totalItems)].map((_, index) => (
+            <button
+              key={index}
+              className={`w-2 h-2 rounded-full transition-colors ${
+                currentIndex === index
+                  ? "bg-white"
+                  : "bg-white/50 hover:bg-white/75"
+              }`}
+              onClick={() => setCurrentIndex(index)}
+            />
+          ))}
+        </div>
+      )}
     </div>
   )
 }
