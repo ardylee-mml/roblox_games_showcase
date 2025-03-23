@@ -1,13 +1,12 @@
 import { NextRequest, NextResponse } from "next/server"
 import { getGame, updateGame, deleteGame } from "@/lib/db"
 
-// GET /api/games/[id]
 export async function GET(
   request: NextRequest,
-  context: { params: { id: string } }
+  { params }: { params: { id: string } }
 ) {
   try {
-    const game = await getGame(context.params.id)
+    const game = await getGame(params.id)
     if (!game) {
       return NextResponse.json({ error: "Game not found" }, { status: 404 })
     }
@@ -21,14 +20,13 @@ export async function GET(
   }
 }
 
-// PUT /api/games/[id]
 export async function PUT(
   request: NextRequest,
-  context: { params: { id: string } }
+  { params }: { params: { id: string } }
 ) {
   try {
     const game = await request.json()
-    const updatedGame = await updateGame(context.params.id, game)
+    const updatedGame = await updateGame(params.id, game)
     return NextResponse.json(updatedGame)
   } catch (error) {
     console.error("Failed to update game:", error)
@@ -39,13 +37,12 @@ export async function PUT(
   }
 }
 
-// DELETE /api/games/[id]
 export async function DELETE(
   request: NextRequest,
-  context: { params: { id: string } }
+  { params }: { params: { id: string } }
 ) {
   try {
-    await deleteGame(context.params.id)
+    await deleteGame(params.id)
     return NextResponse.json({ success: true })
   } catch (error) {
     console.error("Failed to delete game:", error)
