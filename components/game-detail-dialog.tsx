@@ -20,7 +20,7 @@ interface GameDetailDialogProps {
 export function GameDetailDialog({ game, open, onOpenChange }: GameDetailDialogProps) {
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
-      <DialogContent className="max-w-4xl max-h-[90vh] overflow-hidden flex flex-col bg-white/95 backdrop-blur-sm p-0">
+      <DialogContent className="max-w-4xl max-h-[90vh] overflow-hidden flex flex-col bg-white/95 backdrop-blur-sm p-0 border shadow-lg">
         <DialogHeader className="p-6 border-b bg-gradient-to-r from-indigo-600 to-purple-600">
           <DialogTitle className="text-2xl font-bold text-white">{game.title}</DialogTitle>
         </DialogHeader>
@@ -29,16 +29,16 @@ export function GameDetailDialog({ game, open, onOpenChange }: GameDetailDialogP
           {/* Media Section */}
           {(game.images?.length > 0 || game.videos?.length > 0) && (
             <div className="p-6 border-b">
-              <h3 className="text-lg font-semibold text-indigo-900 mb-4">Media</h3>
+              <h3 className="text-lg font-semibold text-gray-900 mb-4">Media</h3>
               <ImageCarousel images={game.images || []} videos={game.videos} className="w-full rounded-lg overflow-hidden shadow-lg" />
             </div>
           )}
 
           {/* Description Section */}
           <div className="p-6 border-b">
-            <h3 className="text-lg font-semibold text-indigo-900 mb-4">Description</h3>
-            <div className="prose prose-indigo max-w-none">
-              <p className="text-indigo-800/90 whitespace-pre-line">{game.description}</p>
+            <h3 className="text-lg font-semibold text-gray-900 mb-4">Description</h3>
+            <div className="prose max-w-none">
+              <p className="text-gray-700 whitespace-pre-line">{game.description}</p>
             </div>
           </div>
 
