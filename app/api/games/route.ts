@@ -7,9 +7,9 @@ export async function GET() {
     const games = await getAllGames()
     return NextResponse.json(games)
   } catch (error) {
-    console.error("Failed to get games:", error)
+    console.error("Error fetching games:", error)
     return NextResponse.json(
-      { error: "Failed to get games" },
+      { error: "Failed to fetch games" },
       { status: 500 }
     )
   }
@@ -22,7 +22,7 @@ export async function POST(request: NextRequest) {
     const newGame = await createGame(game)
     return NextResponse.json(newGame, { status: 201 })
   } catch (error) {
-    console.error("Failed to create game:", error)
+    console.error("Error creating game:", error)
     return NextResponse.json(
       { error: "Failed to create game" },
       { status: 500 }

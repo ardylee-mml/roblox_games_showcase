@@ -12,9 +12,9 @@ export async function GET(
     }
     return NextResponse.json(game)
   } catch (error) {
-    console.error("Failed to get game:", error)
+    console.error("Error fetching game:", error)
     return NextResponse.json(
-      { error: "Failed to get game" },
+      { error: "Failed to fetch game" },
       { status: 500 }
     )
   }
@@ -29,7 +29,7 @@ export async function PUT(
     const updatedGame = await updateGame(params.id, game)
     return NextResponse.json(updatedGame)
   } catch (error) {
-    console.error("Failed to update game:", error)
+    console.error("Error updating game:", error)
     return NextResponse.json(
       { error: "Failed to update game" },
       { status: 500 }
@@ -43,9 +43,9 @@ export async function DELETE(
 ) {
   try {
     await deleteGame(params.id)
-    return NextResponse.json({ success: true })
+    return NextResponse.json({ message: "Game deleted successfully" })
   } catch (error) {
-    console.error("Failed to delete game:", error)
+    console.error("Error deleting game:", error)
     return NextResponse.json(
       { error: "Failed to delete game" },
       { status: 500 }
