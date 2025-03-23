@@ -41,7 +41,7 @@ export default function RobloxGamesShowcase() {
   if (loading) {
     return (
       <div className="min-h-screen bg-gradient-to-b from-indigo-50 to-white flex items-center justify-center">
-        <div className="animate-pulse text-2xl text-indigo-600">Loading amazing games...</div>
+        <div className="animate-pulse text-2xl text-indigo-600 font-semibold">Loading amazing games...</div>
       </div>
     )
   }
@@ -49,9 +49,9 @@ export default function RobloxGamesShowcase() {
   return (
     <main className="min-h-screen bg-gradient-to-b from-indigo-50 to-white">
       {/* Header */}
-      <div className="bg-gradient-to-r from-indigo-600 to-purple-600">
-        <div className="container mx-auto px-4 py-8">
-          <h1 className="text-4xl font-bold tracking-tight mb-2 text-white">
+      <div className="bg-gradient-to-r from-indigo-600 to-purple-600 shadow-md">
+        <div className="container mx-auto px-4 py-12">
+          <h1 className="text-4xl md:text-5xl font-bold tracking-tight mb-4 text-white text-balance">
             MML Game and Development Competition
           </h1>
           <p className="text-xl text-white/90">
@@ -61,10 +61,10 @@ export default function RobloxGamesShowcase() {
       </div>
 
       {/* Games List */}
-      <div className="container mx-auto px-4 py-8">
-        <div className="space-y-6">
+      <div className="container mx-auto px-4 py-12">
+        <div className="space-y-8">
           {games.map((game) => (
-            <Card key={game.id} className="overflow-hidden bg-white/95 backdrop-blur-sm border shadow-md hover:shadow-lg transition-all">
+            <Card key={game.id} className="overflow-hidden">
               <CardContent className="p-0">
                 <div className="flex flex-col lg:flex-row">
                   {/* Image Section */}
@@ -92,7 +92,9 @@ export default function RobloxGamesShowcase() {
                       {game.title}
                     </h2>
                     <div className="prose max-w-none mb-6">
-                      <p className="text-gray-700 whitespace-pre-line">{game.description}</p>
+                      <p className="text-gray-700 whitespace-pre-line line-clamp-3">
+                        {game.description}
+                      </p>
                     </div>
                     <div className="flex flex-col sm:flex-row items-start sm:items-center gap-4">
                       {game.videos && game.videos.length > 0 && (
